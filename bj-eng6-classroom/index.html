@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>北京版六年级英语·课堂游戏站（2024新版）</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧩</text></svg>">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-icon">🧩</span>
+    <div>
+      <h1>北京版六年级英语 · 课堂游戏站</h1>
+      <p class="subtitle">2024新课标（一年级起点）· 六上 + 六下 · 零依赖离线可用</p>
+    </div>
+  </div>
+  <div class="selectors">
+    <select id="bookSel" aria-label="选择册别"></select>
+    <select id="unitSel" aria-label="选择单元"></select>
+  </div>
+</header>
+
+<nav class="tabs" id="tabs">
+  <button class="tab-btn active" data-tab="flash">📇 单词卡</button>
+  <button class="tab-btn" data-tab="pic">🖼️ 看图选词</button>
+  <button class="tab-btn" data-tab="listen">🔊 听音选词</button>
+  <button class="tab-btn" data-tab="spell">✏️ 听音拼写</button>
+  <button class="tab-btn" data-tab="prof">👔 职业工装连线</button>
+  <button class="tab-btn" data-tab="memory">🃏 记忆翻牌</button>
+  <button class="tab-btn" data-tab="sentence">🧱 句子拼装</button>
+  <button class="tab-btn" data-tab="bingo">🎯 单词Bingo</button>
+  <button class="tab-btn" data-tab="wheel">🎡 幸运转盘</button>
+</nav>
+
+<!-- ======================= 单词卡 ======================= -->
+<section class="panel active" id="panel-flash">
+  <div class="panel-head">
+    <h2>📇 单词闪卡</h2>
+    <span class="hint" id="flashPos">1 / 10</span>
+  </div>
+  <label class="switch-line"><input type="checkbox" id="hideEn"> 听写模式（隐藏英文，只看图和中文）</label>
+  <div class="flashcard" id="flashCard">
+    <div class="fc-emoji" id="fcEmoji">✨</div>
+    <div class="fc-en" id="fcEn">wonderful</div>
+    <div class="fc-ph" id="fcPh">/ˈwʌndəfl/</div>
+    <div class="fc-cn" id="fcCn">精彩的</div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-green" id="flashPrev">◀ 上一个</button>
+    <button class="btn btn-primary" id="flashSpeak">🔊 朗读</button>
+    <button class="btn btn-orange" id="flashShuffle">🎲 随机</button>
+    <button class="btn btn-green" id="flashNext">下一个 ▶</button>
+  </div>
+  <div class="mini-block">
+    <h3>本单元核心句型（点喇叭跟读）</h3>
+    <div id="sentenceCards"></div>
+  </div>
+</section>
+
+<!-- ======================= 看图选词 ======================= -->
+<section class="panel" id="panel-pic">
+  <div class="panel-head">
+    <h2>🖼️ 看图选词</h2>
+    <div class="score-box"><span id="picScore">得分 0</span><span id="picStreak">连胜 0</span></div>
+  </div>
+  <p class="guide">看图片，选出正确的英文单词。本轮 10 题。</p>
+  <div class="picture-stage" id="picStage">
+    <div class="pic-emoji" id="picEmoji">🐤</div>
+    <div class="pic-options" id="picOptions"></div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-primary" id="picNext">下一题 ▶</button>
+    <button class="btn btn-orange" id="picRestart">🔄 重新开始</button>
+  </div>
+</section>
+
+<!-- ======================= 听音选词 ======================= -->
+<section class="panel" id="panel-listen">
+  <div class="panel-head">
+    <h2>🔊 听音选词</h2>
+    <div class="score-box"><span id="listenScore">得分 0</span><span id="listenStreak">连胜 0</span></div>
+  </div>
+  <p class="guide">听读音，选出你听到的单词。本轮 10 题。</p>
+  <div class="listen-stage">
+    <button class="btn btn-big" id="listenPlay">🔊 播放读音</button>
+    <div class="pic-options" id="listenOptions"></div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-primary" id="listenNext">下一题 ▶</button>
+    <button class="btn btn-orange" id="listenRestart">🔄 重新开始</button>
+  </div>
+</section>
+
+<!-- ======================= 听音拼写 ======================= -->
+<section class="panel" id="panel-spell">
+  <div class="panel-head">
+    <h2>✏️ 听音拼写</h2>
+    <div class="score-box"><span id="spellScore">得分 0</span></div>
+  </div>
+  <p class="guide">听读音 → 用字母卡片拼出单词。</p>
+  <div class="spell-hint" id="spellHint">
+    <span class="spell-emoji" id="spellEmoji">🐤</span>
+    <span class="spell-cn" id="spellCn">小鸡</span>
+    <button class="btn btn-primary" id="spellPlay">🔊 再听一遍</button>
+  </div>
+  <div class="spell-answer" id="spellAnswer"></div>
+  <div class="spell-letters" id="spellLetters"></div>
+  <div class="btn-row">
+    <button class="btn btn-orange" id="spellUndo">⌫ 撤销</button>
+    <button class="btn btn-green" id="spellCheck">✅ 检查</button>
+    <button class="btn btn-primary" id="spellNext">下一题 ▶</button>
+    <button class="btn btn-orange" id="spellRestart">🔄 重新开始</button>
+  </div>
+</section>
+
+<!-- ======================= 职业工装连线 ======================= -->
+<section class="panel" id="panel-prof">
+  <div class="panel-head">
+    <h2>👔 职业工装连线（六上 Unit 6）</h2>
+    <div class="score-box"><span id="profScore">配对 0 / 8</span></div>
+  </div>
+  <p class="guide">点击左边的「衣服/装备」，再点击右边的「职业」连线。看服装猜职业！</p>
+  <div class="match-wrap" id="match-wrap">
+    <svg id="matchSvg" width="100%" height="100%"></svg>
+    <div class="match-col" id="matchLeft"></div>
+    <div class="match-col" id="matchRight"></div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-primary" id="profSpeakOutfit">🔊 读服装</button>
+    <button class="btn btn-orange" id="profReset">🔄 重新配对</button>
+  </div>
+</section>
+
+<!-- ======================= 记忆翻牌 ======================= -->
+<section class="panel" id="panel-memory">
+  <div class="panel-head">
+    <h2>🃏 记忆翻牌</h2>
+    <div class="score-box"><span id="memInfo">翻开 0 次 · 配对 0/6</span></div>
+  </div>
+  <p class="guide">找出「英文 ↔ 图片」配对。一次翻两张。</p>
+  <div class="memory-grid" id="memoryGrid"></div>
+  <div class="btn-row">
+    <button class="btn btn-primary" id="memNew">🃏 新的一局</button>
+    <button class="btn btn-orange" id="memFlipAll">👀 预览 3 秒</button>
+  </div>
+</section>
+
+<!-- ======================= 句子拼装 ======================= -->
+<section class="panel" id="panel-sentence">
+  <div class="panel-head">
+    <h2>🧱 句子拼装</h2>
+    <div class="score-box"><span id="senScore">完成 0 / 10</span></div>
+  </div>
+  <p class="guide">按中文提示，把单词按顺序拼成英文句子。</p>
+  <div class="sen-cn" id="senCn">我度过了一个精彩的暑假。</div>
+  <div class="spell-answer" id="senAnswer"></div>
+  <div class="spell-letters sen-chips" id="senChips"></div>
+  <div class="btn-row">
+    <button class="btn btn-orange" id="senUndo">⌫ 撤销</button>
+    <button class="btn btn-green" id="senCheck">✅ 检查</button>
+    <button class="btn btn-primary" id="senNext">下一句 ▶</button>
+    <button class="btn btn-orange" id="senRestart">🔄 重新开始</button>
+    <button class="btn btn-green" id="senSpeak">🔊 读句子</button>
+  </div>
+</section>
+
+<!-- ======================= 单词Bingo ======================= -->
+<section class="panel" id="panel-bingo">
+  <div class="panel-head">
+    <h2>🎯 单词 Bingo</h2>
+    <div class="score-box"><span id="bingoCalled">已抽 0 词</span></div>
+  </div>
+  <p class="guide">老师抽词（自动朗读），学生在自己打印的 Bingo 卡上做标记。</p>
+  <div class="bingo-top">
+    <button class="btn btn-primary" id="bingoCall">🎲 抽一个词</button>
+    <button class="btn btn-green" id="bingoSpeakLast">🔊 再读一次</button>
+    <button class="btn btn-orange" id="bingoPrint">🖨️ 打印卡片</button>
+    <button class="btn btn-orange" id="bingoReset">🔄 新一轮</button>
+  </div>
+  <div class="bingo-current" id="bingoCurrent">点击「抽一个词」开始</div>
+  <div class="bingo-grid" id="bingoGrid"></div>
+  <div class="bingo-history" id="bingoHistory"></div>
+</section>
+
+<!-- ======================= 幸运转盘 ======================= -->
+<section class="panel" id="panel-wheel">
+  <div class="panel-head">
+    <h2>🎡 幸运转盘</h2>
+  </div>
+  <p class="guide">转到哪个词，就用哪个词造句 / 读三遍 / 抢答！</p>
+  <div class="wheel-wrap">
+    <div class="wheel-arrow">▼</div>
+    <div class="wheel" id="wheel">
+      <svg id="wheelSvg" viewBox="0 0 400 400"></svg>
+    </div>
+  </div>
+  <div class="wheel-result" id="wheelResult">点击「转起来」开始</div>
+  <div class="btn-row">
+    <button class="btn btn-primary" id="wheelSpin">🌀 转起来</button>
+    <button class="btn btn-green" id="wheelSpeak">🔊 朗读</button>
+    <button class="btn btn-orange" id="wheelSpeed">⚡ 变速模式</button>
+  </div>
+</section>
+
+<footer class="footer">
+  教材数据按 2024 新版目录核对 · 想换词/加词请编辑 <code>js/data.js</code> · 全部本地运行，无任何外部依赖
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script src="js/games.js"></script>
+</body>
+</html>
